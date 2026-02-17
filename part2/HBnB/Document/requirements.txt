@@ -1,0 +1,6 @@
+
+list the Python packages APPs for the project:
+
+flask
+flask-rest
+
