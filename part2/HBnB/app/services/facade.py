@@ -3,6 +3,7 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+from app.models.base import datetime # Import the datetime class from the base module to handle timestamps for updates
 
 class HBnBFacade:
     def __init__(self):
@@ -51,8 +52,8 @@ class HBnBFacade:
     def list_reviews(self):
         return self.repo.all(Review)
 
-    #AMENITIES
-    def create_amenity(self, name, description=""):
+    #AMENITIES 
+    def create_amenity(self, name, description=""): #
         amenity = Amenity(name, description)
         return self.repo.save(amenity)
 
@@ -97,3 +98,28 @@ class HBnBFacade:
 
         user.updated_at = datetime.utcnow() # update the updated_at timestamp to the current time
         return user # return the updated user object
+
+    # ---------- New : Support GET ---- get amenity_by_id method to retrieve an amenity by its ID task3 ----------
+    def get_amenity_by_id(self, amenity_id):
+        amenity = self.repo.get(Amenity, amenity_id) # get the amenity object from the database using the amenity_id
+        if not amenity:
+            raise ValueError("Amenity not found") # raise an error if the amenity ID does not exist
+        return amenity # return the amenity object if found
+    # ---------- New : Support GET ---- get_all_amenities method to retrieve all amenities task3 ----------
+    def get_all_amenities(self):
+        return self.repo.all(Amenity) # return a list of all amenity objects from the database
+
+# ---------- New : Support PUT ---- update_amenity method to update an existing amenity by its ID task3 ----------
+    def update_amenity(self, amenity_id, data):
+        amenity = self.repo.get(Amenity, amenity_id) # get the amenity object from the database using the amenity_id
+        if not amenity:
+            raise ValueError("Amenity not found") # raise an error if the amenity ID does not exist
+        
+        allowed = {"name", "description"} # define a set of allowed fields that can be updated for an amenity
+        
+        for key, value in data.items(): # iterate through the key-value pairs in the data dictionary
+            if key in allowed: # check if the key is in the allowed fields for an amenity
+                setattr(amenity, key, value) # update the amenity object with the new value for the allowed field
+
+        amenity.update_at = datetime.utcnow() # update the updated_at timestamp to the current time
+        return amenity # return the updated amenity object
