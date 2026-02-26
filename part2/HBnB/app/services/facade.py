@@ -70,3 +70,30 @@ class HBnBFacade:
             raise ValueError("Amenity does not exist") # raise an error if amenity is not found
 
         place.amenities.append(amenity) # add the amenity to the place's list of amenities
+
+    # ----------New : Retrieve all users int the system task2----------
+    def get_all_users(self):
+        return self.repo.all(User) # return a list of all user objects from the database
+
+	# ----------New : Retrieve a user's information based on their user ID task2----------
+    def get_user_by_id(self, user_id): 
+        user = self.repo.get(User, user_id) # get the user object from the database using the user_id
+        if not user:
+            raise ValueError("User not found") # raise an error if the user ID does not exist
+        return user # return the user object if found
+
+    # ----------New : Update a user's information based on their user ID task2----------
+    def update_user(self, user_id,data):
+        user = self.repo.get(User, user_id) # get the user object from the database using the user_id
+        if not user:
+            raise ValueError("User not found") # raise an error if the user ID does not exist
+		
+		# Update only allowed fields (email, first_name, last_name) and ignore password updates for security reasons
+        allowed = {"emails", "first_name", "last_name"} # define a set of allowed fields that can be updated
+        
+        for key, value in data.items(): # iterate through the key-value pairs in the data dictionary
+            if key in allowed: # check if the key is in the allowed fields
+                setattr(user, key, value) # update the user object with the new value for the allowed field
+
+        user.updated_at = datetime.utcnow() # update the updated_at timestamp to the current time
+        return user # return the updated user object
