@@ -23,12 +23,70 @@ class HBnBFacade:
         if not owner: # if the owner does not exist, raise an error
             raise ValueError("Owner does not exist") # raise an error if owner is not found
 
+    # Validate price ----- task 4
+    if "price_per_night" in data and data["price_per_night"] < 0:
+        raise ValueError("Price cannot be neagative")
+
+    # Validate latitude/longitude ---- task 4
+    if "latitude" in data:
+        try:
+            float(data["latitude"])
+        except:
+            raise ValueError("Latitude must be a number")
+
+    if "longitude" in data:
+        try:
+            float(data["longitude"])
+        except:
+            raise ValueError("Longitude must be a number")
+
         place = Place(**data)
         self.repo.save(place)
-        
-        owner.places.append(place) # add the place to the owner's list of places
 
+        owner.places.append(place) # add the place to the owner's list of places
         return place
+
+    def get_place_by_id(self, place_id): # task 4
+        place = self.repo.get(Place, place_id)
+        if not place:
+            raise ValueError("Place not found")
+        return place
+
+    def get_all_place(self):
+        return self.repo.all(Place)
+
+    def update_place(self, place_id, data): # task 4
+        place = self.repo.get(Place, place_id)
+        if not place:
+            raise ValueError("Place not found")
+        allowed = {
+			"name", "description", "rooms", "bathrooms",
+            "max_guests", "price_per_night", "address",
+            "latitude", "longitude"
+        }
+        for key, value in data.items():
+            if key in allowed:
+                setattr(place, key, value)
+
+        place.updated_at = datetime.utcnow()
+        return place
+
+    def serialize_place(self, place):
+        data = place.to_dict()
+    
+        # Add owner details ----- task 4
+        owner = self.repo.get(User, place.owner_id)
+        data["owner"] = {
+			"id": owner.id,
+            "email": owner.email,
+            "first_name": owner.first_name,
+            "last_name": owner.last_name
+		}
+
+        # Add amenities ------ task 4
+        data["amenities"] = [a.to_dict() for a in place.amenities]
+
+        return data
 
     def list_place(self):
         return self.repo.all(Place)
@@ -123,3 +181,5 @@ class HBnBFacade:
 
         amenity.update_at = datetime.utcnow() # update the updated_at timestamp to the current time
         return amenity # return the updated amenity object
+    
+    
