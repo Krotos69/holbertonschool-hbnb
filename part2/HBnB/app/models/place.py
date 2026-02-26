@@ -23,3 +23,7 @@ class Place(BaseModel):
         # Relationship: place -> reviews
         self.reviews = [] # This will hold Review instances related to this Place
         self.amenities = [] # This will hold Amenity instances related to this Place
+
+        # Add latitude and longitude attributes ---- task 4
+        self.latitude = latitude 
+        self.longitude = longitude
