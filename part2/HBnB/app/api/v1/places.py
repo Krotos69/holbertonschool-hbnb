@@ -1,4 +1,4 @@
-from Flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify
 from app.services.facade import HBnBFacade 
 
 bp = Blueprint("places", __name__, url_prefix="/api/v1/places")
@@ -9,7 +9,7 @@ def create_place():
     payload = request.get_json()
 
     if not payload or "name" not in payload or "owner_id" not in payload:
-        return jsonify("error": "Missing required fields"}), 400 #task 04
+        return jsonify({"error": "Missing required fields"}), 400 #task 04
     
     try:
         place = facade.create_place(**payload)
@@ -22,7 +22,7 @@ def get_place(place_id):
     try:
         place = facade.get_place_by_id(place_id)
     except ValueError as e:
-        return jsonify({"erro": str(e)}), 404
+        return jsonify({"error": str(e)}), 404
     return jsonify(facade.serialize_place(place)), 200 # Place endpoints task4 
 
 @bp.get("/")
@@ -31,9 +31,9 @@ def list_places():
     result = [facade.serialize_place(p) for p in places]
     return jsonify(result), 200
 
-@bp.put("/place_id>") # task 4
+@bp.put("/<place_id>") # task 4
 def update_place(place_id):
-    payload = request_get_json()
+    payload = request.get_json()
 
     if not payload:
         return jsonify({"error": "Invalid JSON"}), 400
