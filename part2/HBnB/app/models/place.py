@@ -1,7 +1,7 @@
 from app.models.base import BaseModel
 
 class Place(BaseModel):
-    def __init__(self, name, description="",rooms=0, bathrooms=0, max_guests=0, price_per_night=0.0, address="", owner_id=None):
+    def __init__(self, name, description="", rooms=0, bathrooms=0, max_guests=0, price_per_night=0.0, address="", owner_id=None, latitude=None, longitude=None):
         super().__init__()
         
         if not name: # name is required
@@ -25,5 +25,5 @@ class Place(BaseModel):
         self.amenities = [] # This will hold Amenity instances related to this Place
 
         # Add latitude and longitude attributes ---- task 4
-        self.latitude = latitude 
+        self.latitude = latitude
         self.longitude = longitude
