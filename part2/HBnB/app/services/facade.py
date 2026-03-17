@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryReporsitory
+from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -7,7 +7,7 @@ from app.models.base import datetime # Import the datetime class from the base m
 
 class HBnBFacade:
     def __init__(self):
-        self.repo = InMemoryReporsitory()
+        self.repo = InMemoryRepository()
 
     # USERS
     def create_user(self, email, password, first_name="", last_name=""):
@@ -23,22 +23,22 @@ class HBnBFacade:
         if not owner: # if the owner does not exist, raise an error
             raise ValueError("Owner does not exist") # raise an error if owner is not found
 
-    # Validate price ----- task 4
-    if "price_per_night" in data and data["price_per_night"] < 0:
-        raise ValueError("Price cannot be neagative")
+        # Validate price ----- task 4
+        if "price_per_night" in data and data["price_per_night"] < 0:
+            raise ValueError("Price cannot be negative")
 
-    # Validate latitude/longitude ---- task 4
-    if "latitude" in data:
-        try:
-            float(data["latitude"])
-        except:
-            raise ValueError("Latitude must be a number")
+        # Validate latitude/longitude ---- task 4
+        if "latitude" in data:
+            try:
+                float(data["latitude"])
+            except:
+                raise ValueError("Latitude must be a number")
 
-    if "longitude" in data:
-        try:
-            float(data["longitude"])
-        except:
-            raise ValueError("Longitude must be a number")
+        if "longitude" in data:
+            try:
+                float(data["longitude"])
+            except:
+                raise ValueError("Longitude must be a number")
 
         place = Place(**data)
         self.repo.save(place)
@@ -52,7 +52,7 @@ class HBnBFacade:
             raise ValueError("Place not found")
         return place
 
-    def get_all_place(self):
+    def get_all_places(self):
         return self.repo.all(Place)
 
     def update_place(self, place_id, data): # task 4
@@ -93,7 +93,7 @@ class HBnBFacade:
 
     # REVIEWS
     def create_review(self, **data): # create a review using the data provided
-        user = self.repo,get(User, data["user_id"]) # get the user who created the review using the user_id from the data
+        user = self.repo.get(User, data["user_id"]) # get the user who created the review using the user_id from the data
         Place = self.repo.get(Place, data["place_id"]) # get the place being reviewed using the place_id from the data
         
         if not user: # if the user does not exist, raise an error
