@@ -35,7 +35,7 @@ def list_reviews():
     return jsonify(result), 200
 
 # improvement #4 review task 5
-@bp.put("/<reviews_id>")
+@bp.put("/<review_id>")
 def update_review(review_id):
     payload = request.get_json()
     
