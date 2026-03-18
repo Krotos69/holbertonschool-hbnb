@@ -106,6 +106,7 @@ class HBnBFacade:
 
         user.reviews.append(review) # add the review to the user's list of reviews
         Place.reviews.append(review) # add the review to the place's list of reviews
+        return review # task05 fixed added return statment
 
     def list_reviews(self):
         return self.repo.all(Review)
