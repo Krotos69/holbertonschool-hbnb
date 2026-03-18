@@ -111,11 +111,25 @@ class HBnBFacade:
     def list_reviews(self):
         return self.repo.all(Review)
 
-    def get_review_by_id(self, review_id):
+    def get_review_by_id(self, review_id): # task 5
         """Get a review by its ID"""
         review = self.repo.get(Review, review_id)
         if not review:
             raise ValueError("Review not found")
+        return review
+
+    def update_review(self, review_id, data):
+        """update a review by its"""
+        review = self.repo.get(Review, review_id)
+        if not review:
+            raise ValueError("Review not found")
+        
+        allowed = {"text", "rating"}
+        for key, value in data.items():
+            if key in allowed:
+                setattr(review, key, value)
+        
+        review.update_at = datetime.utcnow()
         return review
 
     #AMENITIES 
