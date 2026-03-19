@@ -47,3 +47,12 @@ def update_review(review_id):
         return jsonify({"error": str(e)}), 404
     
     return jsonify(updated.to_dict()), 200
+
+@bp.delete("/<review_id>")
+def delete_review(review_id):
+    try:
+        facade.delete_review(review_id)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+    
+    return "", 204
