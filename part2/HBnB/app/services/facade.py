@@ -151,6 +151,10 @@ class HBnBFacade:
     # Delete from repository
     self.repo.delete(Review, review_id)
 
+    def get_all_reviews(self):
+    """Get all reviews"""
+    return self.repo.all(Review)
+
     #AMENITIES 
     def create_amenity(self, name, description=""): #
         amenity = Amenity(name, description)
