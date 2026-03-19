@@ -132,8 +132,8 @@ class HBnBFacade:
         review.update_at = datetime.utcnow()
         return review  #task5
 
-    def delete_review(self, review_id):
-    """Delete a review by its ID"""
+    def delete_review(self, review_id): #task5 implementation #3 
+        """Delete a review by its ID"""
     review = self.repo.get(Review, review_id)
     if not review:
         raise ValueError("Review not found")
@@ -151,12 +151,12 @@ class HBnBFacade:
     # Delete from repository
     self.repo.delete(Review, review_id)
 
-    def get_all_reviews(self):
-    """Get all reviews"""
+    def get_all_reviews(self): #task5 implementation#4
+        """Get all reviews"""
     return self.repo.all(Review)
 
     #AMENITIES 
-    def create_amenity(self, name, description=""): #
+    def create_amenity(self, name, description=""):
         amenity = Amenity(name, description)
         return self.repo.save(amenity)
 
