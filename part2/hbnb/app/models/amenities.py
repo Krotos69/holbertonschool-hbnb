@@ -14,3 +14,5 @@ class Amenity(BaseModel):
     def _validate(self):
         if not self.name:
             raise ValueError("Amenity name is required.")
+        if len(self.name) > 50:
+            raise ValueError("Amenity name cannot exceed 50 characters.")
