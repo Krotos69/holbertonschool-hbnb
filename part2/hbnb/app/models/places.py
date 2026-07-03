@@ -31,7 +31,7 @@ class Place(BaseModel):
             raise ValueError("Place title is required.")
         if self._price is None:
             raise ValueError("Place price is required.")
-        if self._longitudelatitude is None:
+        if self._latitude is None:
             raise ValueError("Place latitude is required.")
         if self._longitude is None:
             raise ValueError("Place longitude is required.")
