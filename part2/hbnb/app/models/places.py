@@ -7,25 +7,36 @@ class Place(BaseModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.owner_id = kwargs.get("owner_id")  # User.id
-        self.name = kwargs.get("name")
+        
+        # Required attributes
+        self.title = kwargs.get("title")
         self.description = kwargs.get("description")
-        self.city = kwargs.get("city")
-        self.price_per_night = kwargs.get("price_per_night", 0)
+        self.owner_id = kwargs.get("owner_id")  # User.id
+        
+        # these will be validates through property setters
+        self._price = kwargs.get("price")
+        self._latitude =kwargs.get("latitude")
+        self._longitude = kwargs.get("longitude")
 
         # Relationship: list of amenity IDs
         self.amenity_ids = kwargs.get("amenity_ids", [])
 
         self._validate()
 
+# Validation method to ensure required attributes are present and valid
     def _validate(self):
         if not self.owner_id:
             raise ValueError("Place must have an owner_id.")
-        if not self.name:
-            raise ValueError("Place name is required.")
-        if self.price_per_night < 0:
-            raise ValueError("price_per_night cannot be negative.")
+        if not self.title:
+            raise ValueError("Place title is required.")
+        if self._price is None:
+            raise ValueError("Place price is required.")
+        if self._longitudelatitude is None:
+            raise ValueError("Place latitude is required.")
+        if self._longitude is None:
+            raise ValueError("Place longitude is required.")
 
+# Property setters and getters for price, latitude, and longitude with validation
 
     @property
     def price(self):
@@ -43,6 +54,8 @@ class Place(BaseModel):
             raise ValueError("price must be non-negative")
         self._price = value
 
+# latitude and longitude properties with validation
+
     @property
     def latitude(self):
         return self._latitude
@@ -57,6 +70,7 @@ class Place(BaseModel):
             raise ValueError("latitude must be between -90 and 90")
         self._latitude = value
 
+# longitude property with validation
     @property
     def longitude(self):
         return self._longitude
