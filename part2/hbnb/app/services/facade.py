@@ -1,8 +1,9 @@
 from app.persistence.repository import InMemoryRepository
 from app.models import storage
-from app.models.place import Place
+from app.models.places import Place
 from app.models.user import User
-from app.models.amenity import Amenity
+from app.models.amenities import Amenity
+from app.models.reviews import Review
 
 class HBnBFacade:
     def __init__(self):
@@ -152,3 +153,94 @@ class HBnBFacade:
 
         storage.save()
         return place
+
+#------------------------------
+# Review Endpoints methods (task 05)
+#------------------------------
+
+    def create_review(self, review_data): 
+		# Validate user
+        user = storage.get(User, review_data.get("user_id"))
+        if user is None:
+            raise ValueError("User not found")
+
+		# Validate place
+        place = storage.get(Place, review_data.get("place_id"))
+        if place is None:
+            raise ValueError("Place not found")
+
+        # validate text
+        if not review_data.get("text"):
+            raise ValueError("Review text is required")
+
+        # validate rating
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating must be an integer between 1 and 5")
+
+		# Create review
+        review = Review(
+			text=review_data.get("text"),
+            rating=rating,
+			user_id=user.id,
+			place_id=place.id,
+		)
+
+        storage.new(review)
+        storage.save()
+        return review
+
+    def get_review(self, review_id):
+        return storage.get(Review, review_id)
+
+    def get_all_reviews(self):
+        reviews = storage.all(Review).values()
+        return [
+			{
+				"id": r.id,
+				"text": r.text,
+                "rating": r.rating,
+				"user_id": r.user_id,
+				"place_id": r.place_id,
+			}
+			for r in reviews
+		]
+
+    def get_reviews_by_place(self, place_id):
+    place = storage.get(Place, place_id)
+    if place is None:
+        return None
+
+    reviews = storage.all(Review).values()
+    return [
+        {
+            "id": r.id,
+            "text": r.text,
+            "rating": r.rating,
+            "user_id": r.user_id,
+            "place_id": r.place_id,
+        }
+        for r in reviews if r.place_id == place_id
+    ]
+
+    def update_review(self, review_id, review_data):
+        review = storage.get(Review, review_id)
+        if review is None:
+            return None
+
+		# only update provided fields
+        for field in ("text", "rating"):
+            if field in review_data:
+                setattr(review, field, review_data[field])
+
+        storage.save()
+        return review
+
+    def delete_review(self, review_id):
+    review = storage.get(Review, review_id)
+    if review is None:
+        return None
+
+    storage.delete(review)
+    storage.save()
+    return True
