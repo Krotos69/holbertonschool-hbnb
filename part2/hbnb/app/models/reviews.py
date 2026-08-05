@@ -21,3 +21,5 @@ class Review(BaseModel):
             raise ValueError("Review must have a place_id.")
         if not isinstance(self.rating, int) or not (1 <= self.rating <= 5):
             raise ValueError("Rating must be an integer between 1 and 5.")
+        if not self.text or not isinstance(self.text, str):
+            raise ValueError("Review must have non-empty text.")
