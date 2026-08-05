@@ -9,8 +9,8 @@ class Review(BaseModel):
         super().__init__(**kwargs)
         self.user_id = kwargs.get("user_id")
         self.place_id = kwargs.get("place_id")
-        self.rating = kwargs.get("rating")
-        self.comment = kwargs.get("comment", "")
+        self.rating = kwargs.get("rating", 0)
+        self.text = kwargs.get("text", "")
 
         self._validate()
 
