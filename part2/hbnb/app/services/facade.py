@@ -207,21 +207,21 @@ class HBnBFacade:
 		]
 
     def get_reviews_by_place(self, place_id):
-    place = storage.get(Place, place_id)
-    if place is None:
-        return None
+        place = storage.get(Place, place_id)
+        if place is None:
+            return None
 
-    reviews = storage.all(Review).values()
-    return [
-        {
-            "id": r.id,
-            "text": r.text,
-            "rating": r.rating,
-            "user_id": r.user_id,
-            "place_id": r.place_id,
-        }
-        for r in reviews if r.place_id == place_id
-    ]
+        reviews = storage.all(Review).values()
+        return [
+            {
+                "id": r.id,
+                "text": r.text,
+                "rating": r.rating,
+                "user_id": r.user_id,
+                "place_id": r.place_id,
+            }
+            for r in reviews if r.place_id == place_id
+        ]
 
     def update_review(self, review_id, review_data):
         review = storage.get(Review, review_id)
@@ -237,10 +237,10 @@ class HBnBFacade:
         return review
 
     def delete_review(self, review_id):
-    review = storage.get(Review, review_id)
-    if review is None:
-        return None
+        review = storage.get(Review, review_id)
+        if review is None:
+            return None
 
-    storage.delete(review)
-    storage.save()
-    return True
+        storage.delete(review)
+        storage.save()
+        return True
