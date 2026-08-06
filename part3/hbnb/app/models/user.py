@@ -15,6 +15,7 @@ class User(BaseModel):
 
         # Never store plaintext password task1
         self.password = None
+        self.is_admin = kwargs.get("is_admin", False) # Default to False if not provided task2
 
         # If a password was provided, hash it immediately task1
         if "password" in kwargs and kwargs["password"] is not None:
