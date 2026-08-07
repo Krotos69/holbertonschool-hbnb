@@ -46,6 +46,9 @@ class PlaceList(Resource):
         # if not claims.get('is_admin'):
         #     return {'error': 'Admin privileges required'}, 403
         
+        # Rule: owner_id Must be the authenticated user
+        place_data["owner_id"] = current_user_id
+
         data = request.get_json() or {}
         try:
             place = facade.create_place(data)
@@ -89,9 +92,9 @@ class PlaceResource(Resource):
         current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
         claims = get_jwt()  # contains is_admin and other claims task2
 
-        # Optional: only admins can update places
-        # if not claims.get("is_admin"):
-        #     return {"error": "Admin privileges required"}, 403
+        # Rule: only owner can update
+        if str(place["owner"]["id"]) != str(current_user_id):
+            return {"error": "Unauthorized action"}, 403
 
         data = request.get_json() or {}
         try:
