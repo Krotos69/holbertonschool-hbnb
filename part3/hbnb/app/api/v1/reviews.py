@@ -34,10 +34,25 @@ class ReviewList(Resource):
 
         payload = api.payload
         
-        # Optional: enforce that the logged-in user must match review.user_id
-        # if str(current_user_id) != str(data.get("user_id")) and not claims.get("is_admin"):
-        #     return {"error": "You can only create reviews for yourself unless you are an admin"}, 403
+        place_id = payload.get("place_id")
+        place = facade.get_place(place_id)
         
+        if not place:
+            return {"error": "Place not found"}, 404
+
+        # Rule: cannot review your own place
+        if str(place["owner"]["id"]) == str(current_user_id):
+            return {"error": "You cannot review your own place"}, 400
+
+        # Rule: cannot review same place twice
+        all_reviews = facade.get_all_reviews()
+        for r in all_reviews:
+            if str(r["user_id"]) == str(current_user_id) and str(r["place_id"]) == str(place_id):
+                return {"error": "You have already reviewed this place"}, 400
+
+        # Force user_id to be the authenticated user
+        data["user_id"] = current_user_id
+
         try:
             review = facade.create_review(payload)
         except ValueError as e:
@@ -70,9 +85,21 @@ class ReviewItem(Resource):
         
         payload = api.payload
         review = facade.update_review(review_id, payload)
-        if review is None:
-            api.abort(404, "Review not found")
-        return review.to_dict(), 200
+        if not review:
+            return {"error": "Review not found"}, 404
+
+        # Rule: only creator can update
+        if str(review.user_id) != str(current_user_id):
+            return {"error": "Unauthorized action"}, 403
+
+        updated = facade.update_review(review_id, api.payload)
+        return {
+            "id": updated.id,
+            "text": updated.text,
+            "rating": updated.rating,
+            "user_id": updated.user_id,
+            "place_id": updated.place_id
+        }, 200
 
     @jwt_required()
     def delete(self, review_id):
@@ -90,5 +117,6 @@ class ReviewItem(Resource):
 
         deleted = facade.delete_review(review_id)
         if not deleted:
-            api.abort(404, "Review not found")
+            return {"error": "Review not found"}, 404
+
         return {"message": "Review deleted"}, 200
