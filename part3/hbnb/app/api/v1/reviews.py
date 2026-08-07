@@ -1,122 +1,99 @@
+#!/usr/bin/python3
+
+"""Review API endpoints using Flask-RESTx."""
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services.facade import HBnBFacade
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
+# Define the namespace for reviews
+reviews_ns = Namespace('reviews', description='Operations related to reviews')
 
-api = Namespace('reviews', description='Review operations')
-facade = HBnBFacade()
-
-review_model = api.model('Review', {
-    'id': fields.String(readonly=True),
-    'text': fields.String(required=True),
-    'rating': fields.Integer(required=True),
-    'user_id': fields.String(required=True),
-    'place_id': fields.String(required=True)
+# Input model for creating or updating a review
+review_input = reviews_ns.model('ReviewInput', {
+    'text': fields.String(required=True, description='Review text'),
+    'rating': fields.Integer(required=True, description='Rating between 1 and 5'),
+    'user_id': fields.String(required=True, description='UUID of the user'),
+    'place_id': fields.String(required=True, description='UUID of the place')
 })
 
-@api.route('/')
-class ReviewList(Resource):
-    @jwt_required()
-    @api.marshal_list_with(review_model)
-    def get(self):
-        """ List all reviews"""
-        current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
+# Output model for returning a review
+review_output = reviews_ns.model('ReviewOutput', {
+    'id': fields.String(readonly=True),
+    'text': fields.String,
+    'rating': fields.Integer,
+    'user_id': fields.String,
+    'place_id': fields.String
+})
 
+facade = HBnBFacade()
+
+@reviews_ns.route('/')
+class ReviewList(Resource):
+    @reviews_ns.marshal_list_with(review_output)
+    def get(self):
+        """Get all reviews"""
         return facade.get_all_reviews()
 
-    @jwt_required()
-    @api.expect(review_model, validate=True)
-    @api.marshal_with(review_model, code=201)
+    @reviews_ns.expect(review_input)
+    @reviews_ns.marshal_with(review_output, code=201)
     def post(self):
-        """ Create a new review"""
-        current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
-        claims = get_jwt()  # contains is_admin and other claims task2
-
-        payload = api.payload
-        
-        place_id = payload.get("place_id")
-        place = facade.get_place(place_id)
-        
-        if not place:
-            return {"error": "Place not found"}, 404
-
-        # Rule: cannot review your own place
-        if str(place["owner"]["id"]) == str(current_user_id):
-            return {"error": "You cannot review your own place"}, 400
-
-        # Rule: cannot review same place twice
-        all_reviews = facade.get_all_reviews()
-        for r in all_reviews:
-            if str(r["user_id"]) == str(current_user_id) and str(r["place_id"]) == str(place_id):
-                return {"error": "You have already reviewed this place"}, 400
-
-        # Force user_id to be the authenticated user
-        data["user_id"] = current_user_id
-
-        try:
-            review = facade.create_review(payload)
-        except ValueError as e:
-            api.abort(400, str(e))
-        return review.to_dict(), 201
+        """Create a new review"""
+        data = request.get_json()
+        return facade.create_review(data), 201
 
 
-@api.route('/<string:review_id>')
-@api.param('review_id', 'The review identifier')
-class ReviewItem(Resource):
-    
-    @jwt_required()
-    @api.marshal_with(review_model)
+@reviews_ns.route('/<string:review_id>')
+@reviews_ns.param('review_id', 'The review identifier')
+class ReviewResource(Resource):
+    @reviews_ns.marshal_with(review_output)
     def get(self, review_id):
-        """Get a review by ID"""
-        current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
-        
+        """Get a single review"""
         review = facade.get_review(review_id)
-        if review is None:
-            api.abort(404, "Review not found")
-        return review.to_dict(), 200
+        if not review:
+            reviews_ns.abort(404, "Review not found")
+        return review
 
-    @jwt_required()
-    @api.expect(review_model, validate=True)
-    @api.marshal_with(review_model)
+    @reviews_ns.expect(review_input)
+    @reviews_ns.marshal_with(review_output)
     def put(self, review_id):
-        """Update a review by ID"""
-        current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
-        claims = get_jwt()  # contains is_admin and other claims task2
-        
-        payload = api.payload
-        review = facade.update_review(review_id, payload)
-        if not review:
-            return {"error": "Review not found"}, 404
+        """Update a review"""
+        data = request.get_json()
+        updated = facade.update_review(review_id, data)
+        if not updated:
+            reviews_ns.abort(404, "Review not found")
+        return updated
 
-        # Rule: only creator can update
-        if str(review.user_id) != str(current_user_id):
-            return {"error": "Unauthorized action"}, 403
-
-        updated = facade.update_review(review_id, api.payload)
-        return {
-            "id": updated.id,
-            "text": updated.text,
-            "rating": updated.rating,
-            "user_id": updated.user_id,
-            "place_id": updated.place_id
-        }, 200
-
-    @jwt_required()
     def delete(self, review_id):
-        """Delete a review by ID"""
-        current_user_id = get_jwt_identity()  # Get the current user's ID from the JWT
-        claims = get_jwt()  # contains is_admin and other claims task2
-
-        review = facade.get_review(review_id)
-        if not review:
-            return {"error": "Review not found"}, 404
-
-        # Only owner or admin can delete
-        if str(current_user_id) != str(review.user_id) and not claims.get("is_admin"):
-            return {"error": "You can only delete your own reviews unless you are an admin"}, 403
-
+        """Delete a review"""
         deleted = facade.delete_review(review_id)
         if not deleted:
-            return {"error": "Review not found"}, 404
-
+            reviews_ns.abort(404, "Review not found")
         return {"message": "Review deleted"}, 200
+
+
+@reviews_ns.route('/place/<string:place_id>')
+@reviews_ns.param('place_id', 'The place identifier')
+class PlaceReviews(Resource):
+    @reviews_ns.marshal_list_with(review_output)
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        reviews = facade.get_reviews_by_place(place_id)
+        if reviews is None:
+            reviews_ns.abort(404, "Place not found")
+        return reviews
+
+@reviews_ns.route('/place/<string:place_id>/new')
+@reviews_ns.param('place_id', 'The place identifier')
+class ReviewToPlace(Resource):
+    @reviews_ns.expect(reviews_ns.model('ReviewToPlaceInput', {
+        'text': fields.String(required=True),
+        'rating': fields.Integer(required=True),
+        'user_id': fields.String(required=True)
+    }))
+    @reviews_ns.marshal_with(review_output, code=201)
+    def post(self, place_id):
+        """Create a review for a specific place"""
+        data = request.get_json()
+        data['place_id'] = place_id
+        return facade.create_review(data), 201
+api = reviews_ns
