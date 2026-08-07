@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt #task2
 
 api = Namespace('users', description='User operations')
 
@@ -12,12 +13,14 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
+    @jwt_required()  # Require JWT for creating user this endpoint task2
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new user"""
+        current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token task2
         user_data = api.payload
 
         #Check if  email already exists in the database task1
@@ -36,9 +39,11 @@ class UserList(Resource):
             'email': new_user.email
         }, 201
 
+    @jwt_required()  # Require JWT for getting users listing this endpoint task2
     @api.response(200, 'List of users retrieved successfully')
     def get(self):
         """Get list of all users"""
+        current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token task2
         users = facade.get_all_users()
         result = [
             {
@@ -56,8 +61,12 @@ class UserList(Resource):
 class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
     @api.response(404, 'User not found')
+    @jwt_required()  # Require JWT for getting user details this endpoint task2
     def get(self, user_id):
         """Get user details by ID"""
+        current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token task2
+        claims = get_jwt()  # contains is_admin and other claims task2
+        
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
@@ -68,12 +77,15 @@ class UserResource(Resource):
             'email': user.email
         }, 200
 
+    @jwt_required()  # Require JWT for updating user this endpoint task2
     @api.expect(user_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
     def put(self, user_id):
         """Update user information"""
+        current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token task2
+        claims = get_jwt()  # contains is_admin and other claims task2
         data = api.payload
         user = facade.update_user(user_id, data)
         if not user:
