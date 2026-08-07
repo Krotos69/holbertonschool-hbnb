@@ -85,8 +85,17 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update user information"""
         current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token task2
-        claims = get_jwt()  # contains is_admin and other claims task2
+
+        # Rule: user can only modify their own profile
+        if str(current_user_id) != str(user_id):
+            return {"error": "Unauthorized action"}, 403
+
         data = api.payload
+        
+        # Rule: cannot modify email or password here
+        if 'email' in data or 'password' in data:
+            return {"error": " You cannot modify email or password here"}, 400
+
         user = facade.update_user(user_id, data)
         if not user:
             return {'error': 'User not found'}, 404
