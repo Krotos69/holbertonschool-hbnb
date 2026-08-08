@@ -2,22 +2,10 @@ from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services.facade import HBnBFacade
 from app.api.v1.reviews import review_model
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
 facade = HBnBFacade()
-
-amenity_model = api.model('PlaceAmenity', {
-    'id': fields.String(description='Amenity ID'),
-    'name': fields.String(description='Name of the amenity')
-})
-
-user_model = api.model('PlaceUser', {
-    'id': fields.String(description='User ID'),
-    'first_name': fields.String(description='First name of the owner'),
-    'last_name': fields.String(description='Last name of the owner'),
-    'email': fields.String(description='Email of the owner')
-})
 
 place_model = api.model('Place', {
     'title': fields.String(required=True),
@@ -25,9 +13,6 @@ place_model = api.model('Place', {
     'price': fields.Float(required=True),
     'latitude': fields.Float(required=True),
     'longitude': fields.Float(required=True),
-    'owner_id': fields.String(required=True),
-    'amenities': fields.List(fields.Nested(amenity_model)),
-    'reviews': fields.List(fields.Nested(review_model))
 })
 
 
@@ -46,23 +31,13 @@ class PlaceList(Resource):
         data["owner_id"] = current_user_id
 
         place = facade.create_place(data)
-
-        return {
-            "id": place.id,
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner_id,
-            "amenities": [],
-            "reviews": []
-        }, 201
+        return place.to_dict(), 201
 
     @jwt_required()
     def get(self):
         """Get a list of all places"""
-        return facade.get_all_places(), 200
+        places = facade.get_all_places()
+        return [p.to_dict() for p in places], 200
 
 
 @api.route('/<place_id>')
@@ -74,7 +49,7 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if place is None:
             return {"error": "Place not found"}, 404
-        return place, 200
+        return place.to_dict(), 200
 
     @jwt_required()
     @api.expect(place_model)
@@ -93,15 +68,17 @@ class PlaceResource(Resource):
         data = request.get_json() or {}
         updated = facade.update_place(place_id, data)
 
-        return {"message": "Place updated successfully"}, 200
+        return updated.to_dict(), 200
 
 
 @api.route('/<place_id>/reviews')
 class PlaceReviewList(Resource):
 
+    @jwt_required()
     @api.marshal_list_with(review_model)
     def get(self, place_id):
+        """Get all reviews for a place"""
         reviews = facade.get_reviews_by_place(place_id)
         if reviews is None:
-            api.abort(404, "Place not found")
-        return reviews, 200
+            return {"error": "Place not found"}, 404
+        return [r.to_dict() for r in reviews], 200
