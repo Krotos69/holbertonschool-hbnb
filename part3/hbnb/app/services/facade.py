@@ -3,12 +3,21 @@ from app.models.places import Place
 from app.models.amenities import Amenity
 from app.models.reviews import Review
 
+from app.services.repositories.user_repository import UserRepository
 from app.persistence.sqlalchemy_repository import SQLAlchemyRepository
 
 
 class HBnBFacade:
+    """
+    Facade layer for HBnB.
+    Uses SQLAlchemy repositories for all persistence operations.
+    """
+
     def __init__(self):
-        self.user_repo = SQLAlchemyRepository(User)
+        # Task 6 requirement: dedicated UserRepository
+        self.user_repo = UserRepository()
+
+        # Generic repositories for other entities
         self.place_repo = SQLAlchemyRepository(Place)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
         self.review_repo = SQLAlchemyRepository(Review)
@@ -18,7 +27,13 @@ class HBnBFacade:
     # ------------------------------
 
     def create_user(self, user_data):
+        """Create a new user with hashed password."""
         user = User(**user_data)
+
+        # Task 6 requirement: hash password before saving
+        if "password" in user_data:
+            user.hash_password(user_data["password"])
+
         self.user_repo.add(user)
         return user
 
@@ -26,7 +41,7 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute("email", email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         return self.user_repo.get_all()
