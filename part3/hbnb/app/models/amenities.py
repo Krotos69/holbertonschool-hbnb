@@ -1,18 +1,33 @@
+from app.extensions import db
 from app.models.base import BaseModel
+
 
 class Amenity(BaseModel):
     """
-    Represents an amenity that can be associated with a place.
+    SQLAlchemy-mapped Amenity model.
+    Supports:
+    - many-to-many relationship with Place
     """
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.name = kwargs.get("name")
+    __tablename__ = "amenities"
 
-        self._validate()
+    # Columns
+    name = db.Column(db.String(128), nullable=False)
 
-    def _validate(self):
-        if not self.name:
-            raise ValueError("Amenity name is required.")
-        if len(self.name) > 50:
-            raise ValueError("Amenity name cannot exceed 50 characters.")
+    # Relationship back to Place (many-to-many)
+    # The association table is defined in places.py
+    places = db.relationship(
+        "Place",
+        secondary="place_amenity",
+        backref=db.backref("amenities", lazy=True),
+        lazy=True
+    )
+
+    def to_dict(self):
+        """Return a safe dictionary representation of the Amenity."""
+        data = super().to_dict()
+        data.update({
+            "name": self.name,
+            "places": [p.id for p in self.places],
+        })
+        return data
