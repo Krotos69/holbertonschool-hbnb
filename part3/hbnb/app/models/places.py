@@ -37,9 +37,10 @@ class Place(BaseModel):
     amenities = db.relationship(
         "Amenity",
         secondary=place_amenity,
-        backref=db.backref("places", lazy=True),
+        back_populates="places",
         lazy=True
     )
+
 
     reviews = db.relationship(
         "Review",
