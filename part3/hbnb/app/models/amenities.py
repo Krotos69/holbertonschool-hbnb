@@ -18,10 +18,11 @@ class Amenity(BaseModel):
     # The association table is defined in places.py
     places = db.relationship(
         "Place",
-        secondary="place_amenity",
-        backref=db.backref("amenities", lazy=True),
+        secondary=place_amenity,
+        back_populates="amenities",
         lazy=True
     )
+
 
     def to_dict(self):
         """Return a safe dictionary representation of the Amenity."""
