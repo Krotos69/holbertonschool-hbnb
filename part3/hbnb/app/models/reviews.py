@@ -1,25 +1,45 @@
+from app.extensions import db
 from app.models.base import BaseModel
+
 
 class Review(BaseModel):
     """
-    Represents a review written by a user for a place.
+    SQLAlchemy-mapped Review model.
+    Supports:
+    - user relationship
+    - place relationship
     """
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.user_id = kwargs.get("user_id")
-        self.place_id = kwargs.get("place_id")
-        self.rating = kwargs.get("rating", 0)
-        self.text = kwargs.get("text", "")  #FIXED: was comment
+    __tablename__ = "reviews"
 
-        self._validate()
+    # Columns
+    text = db.Column(db.String(512), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
 
-    def _validate(self):
-        if not self.user_id:
-            raise ValueError("Review must have a user_id.")
-        if not self.place_id:
-            raise ValueError("Review must have a place_id.")
-        if not isinstance(self.rating, int) or not (1 <= self.rating <= 5):
-            raise ValueError("Rating must be an integer between 1 and 5.")
-        if not self.text or not isinstance(self.text, str):
-            raise ValueError("Review must have non-empty text.")
+    # Foreign keys
+    user_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey("places.id"), nullable=False)
+
+    # Relationships
+    user = db.relationship(
+        "User",
+        back_populates="reviews",
+        lazy=True
+    )
+
+place = db.relationship(
+    "Place",
+    back_populates="reviews",
+    lazy=True
+)
+
+    def to_dict(self):
+        """Return a safe dictionary representation of the Review."""
+        data = super().to_dict()
+        data.update({
+            "text": self.text,
+            "rating": self.rating,
+            "user_id": self.user_id,
+            "place_id": self.place_id,
+        })
+        return data
