@@ -20,12 +20,7 @@ class Review(BaseModel):
     user_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
     place_id = db.Column(db.String(36), db.ForeignKey("places.id"), nullable=False)
 
-    # Relationships
-    user = db.relationship(
-        "User",
-        back_populates="reviews",
-        lazy=True
-    )
+    # No Relationships
 
 place = db.relationship(
     "Place",
