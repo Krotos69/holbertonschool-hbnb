@@ -11,7 +11,7 @@ class User(BaseModel):
     __tablename__ = "users"
 
     # SQLAlchemy columns
-    id = db.Column(db.String(60), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True)
     first_name = db.Column(db.String(128), nullable=False)
     last_name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
