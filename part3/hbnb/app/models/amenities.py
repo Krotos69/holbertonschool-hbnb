@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models.base import BaseModel
+from app.models.places import place_amenity
 
 
 class Amenity(BaseModel):
