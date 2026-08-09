@@ -22,11 +22,6 @@ class Review(BaseModel):
 
     # No Relationships
 
-place = db.relationship(
-    "Place",
-    back_populates="reviews",
-    lazy=True
-)
 
     def to_dict(self):
         """Return a safe dictionary representation of the Review."""
