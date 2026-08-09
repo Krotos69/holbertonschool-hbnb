@@ -34,18 +34,14 @@ class Place(BaseModel):
     # Relationships
     owner = db.relationship("User", backref="places", lazy=True)
 
+    # One-to-many: Place → Reviews
+    reviews = db.relationship("Review", backref="place", lazy=True)
+
+    # Many-to-many: Place ↔ Amenity
     amenities = db.relationship(
         "Amenity",
         secondary=place_amenity,
-        back_populates="places",
-        lazy=True
-    )
-
-
-    reviews = db.relationship(
-        "Review",
-        backref="place",
-        cascade="all, delete-orphan",
+        backref="places",
         lazy=True
     )
 
