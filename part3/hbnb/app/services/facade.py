@@ -30,7 +30,7 @@ class HBnBFacade:
         """Create a new user with hashed password."""
         user = User(**user_data)
 
-        # Task 6 requirement: hash password before saving
+        # Hash password before saving
         if "password" in user_data:
             user.hash_password(user_data["password"])
 
@@ -111,3 +111,9 @@ class HBnBFacade:
 
     def delete_review(self, review_id):
         return self.review_repo.delete(review_id)
+
+
+#---------------------------------------------------
+# Critical Fix: Create One global facade instance
+#---------------------------------------------------
+facade = HBnBFacade()
