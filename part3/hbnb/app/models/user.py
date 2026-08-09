@@ -18,6 +18,11 @@ class User(BaseModel):
     password = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    # Task 8 required relationships
+    places = db.relationship("Place", backref="owner", lazy=True)
+    reviews = db.relationship("Review", backref="author", lazy=True)
+    
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
