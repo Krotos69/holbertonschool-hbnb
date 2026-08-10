@@ -1,47 +1,58 @@
 from flask_restx import Namespace, Resource, fields
-from flask import request
-from flask_jwt_extended import jwt_required
-from app.services.facade import HBnBFacade
+from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
-facade = HBnBFacade()
 
+# Define the amenity model for input validation and documentation
 amenity_model = api.model('Amenity', {
-    'name': fields.String(required=True),
+    'name': fields.String(required=True, description='Name of the amenity')
 })
-
 
 @api.route('/')
 class AmenityList(Resource):
-
-    @jwt_required()
     @api.expect(amenity_model)
+    @api.response(201, 'Amenity successfully created')
+    @api.response(400, 'Invalid input data')
     def post(self):
-        data = request.get_json() or {}
-        amenity = facade.create_amenity(data)
-        return amenity.to_dict(), 201
+        """Register a new amenity"""
+        data = api.payload
+        try:
+            amenity = facade.create_amenity(data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
 
-    @jwt_required()
+        return {'id': amenity.id, 'name': amenity.name}, 201
+
+    @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
+        """Retrieve a list of all amenities"""
         amenities = facade.get_all_amenities()
-        return [a.to_dict() for a in amenities], 200
-
+        return [{'id': a.id, 'name': a.name} for a in amenities], 200
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
-
-    @jwt_required()
+    @api.response(200, 'Amenity details retrieved successfully')
+    @api.response(404, 'Amenity not found')
     def get(self, amenity_id):
+        """Get amenity details by ID"""
         amenity = facade.get_amenity(amenity_id)
-        if amenity is None:
-            return {"error": "Amenity not found"}, 404
-        return amenity.to_dict(), 200
+        if not amenity:
+            return {'error': 'Amenity not found'}, 404
+        return {'id': amenity.id, 'name': amenity.name}, 200
 
-    @jwt_required()
     @api.expect(amenity_model)
+    @api.response(200, 'Amenity updated successfully')
+    @api.response(404, 'Amenity not found')
+    @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
-        data = request.get_json() or {}
-        updated = facade.update_amenity(amenity_id, data)
-        if updated is None:
-            return {"error": "Amenity not found"}, 404
-        return updated.to_dict(), 200
+        """Update an amenity's information"""
+        data = api.payload
+        try:
+            updated = facade.update_amenity(amenity_id, data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
+
+        if not updated:
+            return {'error': 'Amenity not found'}, 404
+
+        return {'message': 'Amenity updated successfully'}, 200

@@ -1,17 +1,14 @@
+#!/usr/bin/python3
+"""Initializes API v1 namespaces and documentation."""
 from flask import Blueprint
 from flask_restx import Api
 
-api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1')
-api = Api(api_v1, version='1.0', title='HBnB API', description='HBnB REST API')
+from .users import api as user_ns
+from .amenities import api as amenity_ns
 
-# Import namespaces
-from .users import api as users_ns
-from .places import api as places_ns
-from .reviews import api as reviews_ns
-from .amenities import api as amenities_ns
+api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
+api = Api(api_bp, title='HBnB API', version='1.0', description='HBnB API documentation')
 
 # Register namespaces
-api.add_namespace(users_ns)
-api.add_namespace(places_ns)
-api.add_namespace(reviews_ns)
-api.add_namespace(amenities_ns)
+api.add_namespace(user_ns, path='/users')
+api.add_namespace(amenity_ns, path='/amenities')

@@ -1,61 +1,99 @@
-from flask_restx import Namespace, Resource, fields
+#!/usr/bin/python3
+
+"""Review API endpoints using Flask-RESTx."""
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_restx import Namespace, Resource, fields
 from app.services.facade import HBnBFacade
 
-api = Namespace('reviews', description='Review operations')
-facade = HBnBFacade()
+# Define the namespace for reviews
+reviews_ns = Namespace('reviews', description='Operations related to reviews')
 
-review_model = api.model('Review', {
-    'text': fields.String(required=True),
-    'rating': fields.Integer(required=True),
+# Input model for creating or updating a review
+review_input = reviews_ns.model('ReviewInput', {
+    'text': fields.String(required=True, description='Review text'),
+    'rating': fields.Integer(required=True, description='Rating between 1 and 5'),
+    'user_id': fields.String(required=True, description='UUID of the user'),
+    'place_id': fields.String(required=True, description='UUID of the place')
 })
 
+# Output model for returning a review
+review_output = reviews_ns.model('ReviewOutput', {
+    'id': fields.String(readonly=True),
+    'text': fields.String,
+    'rating': fields.Integer,
+    'user_id': fields.String,
+    'place_id': fields.String
+})
 
-@api.route('/')
+facade = HBnBFacade()
+
+@reviews_ns.route('/')
 class ReviewList(Resource):
-
-    @jwt_required()
-    @api.expect(review_model)
-    def post(self):
-        """Create a review"""
-        current_user_id = get_jwt_identity()
-        data = request.get_json() or {}
-
-        data["user_id"] = current_user_id
-
-        review = facade.create_review(data)
-        return review.to_dict(), 201
-
-    @jwt_required()
+    @reviews_ns.marshal_list_with(review_output)
     def get(self):
         """Get all reviews"""
-        reviews = facade.get_all_reviews()
-        return [r.to_dict() for r in reviews], 200
+        return facade.get_all_reviews()
+
+    @reviews_ns.expect(review_input)
+    @reviews_ns.marshal_with(review_output, code=201)
+    def post(self):
+        """Create a new review"""
+        data = request.get_json()
+        return facade.create_review(data), 201
 
 
-@api.route('/<review_id>')
+@reviews_ns.route('/<string:review_id>')
+@reviews_ns.param('review_id', 'The review identifier')
 class ReviewResource(Resource):
-
-    @jwt_required()
+    @reviews_ns.marshal_with(review_output)
     def get(self, review_id):
+        """Get a single review"""
         review = facade.get_review(review_id)
-        if review is None:
-            return {"error": "Review not found"}, 404
-        return review.to_dict(), 200
+        if not review:
+            reviews_ns.abort(404, "Review not found")
+        return review
 
-    @jwt_required()
-    @api.expect(review_model)
+    @reviews_ns.expect(review_input)
+    @reviews_ns.marshal_with(review_output)
     def put(self, review_id):
-        data = request.get_json() or {}
+        """Update a review"""
+        data = request.get_json()
         updated = facade.update_review(review_id, data)
-        if updated is None:
-            return {"error": "Review not found"}, 404
-        return updated.to_dict(), 200
+        if not updated:
+            reviews_ns.abort(404, "Review not found")
+        return updated
 
-    @jwt_required()
     def delete(self, review_id):
+        """Delete a review"""
         deleted = facade.delete_review(review_id)
         if not deleted:
-            return {"error": "Review not found"}, 404
+            reviews_ns.abort(404, "Review not found")
         return {"message": "Review deleted"}, 200
+
+
+@reviews_ns.route('/place/<string:place_id>')
+@reviews_ns.param('place_id', 'The place identifier')
+class PlaceReviews(Resource):
+    @reviews_ns.marshal_list_with(review_output)
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        reviews = facade.get_reviews_by_place(place_id)
+        if reviews is None:
+            reviews_ns.abort(404, "Place not found")
+        return reviews
+
+@reviews_ns.route('/place/<string:place_id>/new')
+@reviews_ns.param('place_id', 'The place identifier')
+class ReviewToPlace(Resource):
+    @reviews_ns.expect(reviews_ns.model('ReviewToPlaceInput', {
+        'text': fields.String(required=True),
+        'rating': fields.Integer(required=True),
+        'user_id': fields.String(required=True)
+    }))
+    @reviews_ns.marshal_with(review_output, code=201)
+    def post(self, place_id):
+        """Create a review for a specific place"""
+        data = request.get_json()
+        data['place_id'] = place_id
+        return facade.create_review(data), 201
+api = reviews_ns
