@@ -1,0 +1,99 @@
+nohup: ignoring input
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+127.0.0.1 - - [13/Jul/2025 13:56:34] "[31m[1mGET /auth/protected HTTP/1.1[0m" 401 -
+127.0.0.1 - - [13/Jul/2025 13:56:35] "[33mGET / HTTP/1.1[0m" 404 -
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/users.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/users.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/users.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/users.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/places.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/reviews.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/amenities.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/amenities.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/amenities.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/amenities.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/test_admin_endpoints.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/persistence/repository.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/amenity_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/base_model_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/relationships.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/models/user_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
+ * Detected change in '/home/zekki/holbertonschool-hbnb/part3/hbnb/app/api/v1/__init__.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 643-003-242
