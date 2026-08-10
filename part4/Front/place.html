@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB – Place Details</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="icon" href="images/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo-stack">
+        <a href="index.html">
+          <img src="images/logo.png" alt="HBnB Logo" class="logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <a href="login.html" class="login-button pop-btn" id="login-link">Login</a>
+        <a href="#" id="logout-button" class="login-button pop-btn" style="display:none;">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+  <!-- Banner removed per request (image hidden) -->
+
+  <!-- Place Details (title, description, price, amenities) -->
+  <section class="place-details" id="place-details">
+    <!-- Populated by JS -->
+  </section>
+
+  <!-- Review List -->
+  <section id="reviews">
+    <div class="section-divider"><span>Reviews</span></div>
+    <!-- Populated by JS -->
+  </section>
+
+  <!-- Add Review Button (moved to bottom) -->
+  <section id="add-review" style="display:none;" class="add-review-bottom">
+    <a class="details-button" href="#">Add Review</a>
+  </section>
+</main>
+
+
+  <footer>
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js?v=3"></script>
+</body>
+</html>

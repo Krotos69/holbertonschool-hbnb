@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB – Login</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="icon" href="images/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+  <header>
+    <nav>
+      <div class="logo-stack">
+        <a href="index.html">
+          <img src="images/logo.png" alt="HBnB Logo" class="logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <a href="login.html" class="login-button pop-btn" id="login-link">Login</a>
+        <a href="#" id="logout-button" class="login-button pop-btn" style="display:none;">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <form id="login-form" class="auth-card">
+      <h2>Login</h2>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Login</button>
+      <p class="hint">Don’t have an account?
+        <a href="register.html" class="linklike">Create one</a>
+      </p>
+      <p id="login-error" class="error" aria-live="polite" style="display:none;"></p>
+    </form>
+  </main>
+
+  <footer>
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js?v=3"></script>
+</body>
+</html>

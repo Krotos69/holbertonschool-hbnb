@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB – Register</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="icon" href="images/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo-stack">
+        <a href="index.html">
+          <img src="images/logo.png" alt="HBnB Logo" class="logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <a href="login.html" class="login-button pop-btn" id="login-link">Login</a>
+        <a href="#" id="logout-button" class="login-button pop-btn" style="display:none;">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <form id="register-form">
+      <h2>Create Account</h2>
+
+      <label for="first_name">First name:</label>
+      <input type="text" id="first_name" name="first_name" required>
+
+      <label for="last_name">Last name:</label>
+      <input type="text" id="last_name" name="last_name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Register</button>
+      <p class="hint">Already have an account? <a class="linklike" href="login.html">Back to login</a></p>
+      <p id="register-error" class="error" aria-live="polite" style="display:none;"></p>
+    </form>
+  </main>
+
+  <footer>
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js?v=2"></script>
+</body>
+</html>

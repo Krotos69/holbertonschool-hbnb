@@ -1,0 +1,284 @@
+/* -------------- Reset & Fonts -------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand', sans-serif;
+}
+body {
+  background: #F5F5F5; /* soft gray */
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* Layout: sticky footer (footer always at bottom) */
+html, body { height: 100%; margin: 0; padding: 0; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1 0 auto; }
+
+/* -------------- Header / Nav / Footer -------------- */
+header {
+  background: #FF9F1C; /* orange */
+  padding: 0.5rem; /* smaller header */
+}
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-right { display:flex; align-items:center; gap:12px; }
+.logo {
+  height: 56px; /* smaller logo */
+  width: auto;
+  object-fit: contain;
+}
+.logo-stack { display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+.nav-under { display:flex; gap:12px; }
+.home-button, .logout-button, .login-button {
+  background:#fff;
+  border:1px solid #ffd166;
+  padding:6px 14px;
+  border-radius:8px;
+  text-decoration:none;
+  font-size:0.85rem;
+  font-weight:600;
+  color:#333;
+  cursor:pointer;
+  box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, background .2s;
+  position:relative;
+}
+.home-button.pop-btn {
+  background:#ff9500;
+  border:1px solid #e68400;
+  color:#333;
+  box-shadow:0 4px 10px rgba(0,0,0,0.18);
+  transform:translateY(-2px);
+}
+.home-button.pop-btn:hover {
+  background:#ffa733;
+  transform:translateY(-6px) scale(1.05);
+  box-shadow:0 10px 20px rgba(0,0,0,0.22);
+}
+.home-button.pop-btn:active {
+  background:#ff9500;
+  transform:translateY(-1px) scale(0.98);
+  box-shadow:0 3px 8px rgba(0,0,0,0.2);
+}
+/* Removed old logout pop styles since logout now mirrors login link */
+/* Make details-button share hover pop effect */
+.details-button {
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 14px;
+  background:#ff9500;
+  color:#333;
+  text-decoration:none;
+  border-radius:8px;
+  font-weight:600;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, background .2s;
+}
+.details-button:hover {
+  background:#ffa733;
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 8px 18px rgba(0,0,0,0.22);
+}
+.details-button:active {
+  background:#ff9500;
+  transform:translateY(-1px) scale(0.97);
+  box-shadow:0 3px 8px rgba(0,0,0,0.2);
+}
+/* Optional pulse on focus for accessibility */
+.home-button:focus-visible, .logout-button:focus-visible, .login-button:focus-visible {
+  outline:2px solid #ff9500;
+  outline-offset:2px;
+}
+.login-button { text-decoration:none; font-weight:600; }
+/* Fixed footer (always visible at bottom) */
+body { padding-bottom: 50px; } /* reserve space equal/greater than footer height */
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #FF9F1C;
+  color: #fff;
+  text-align: center;
+  padding: 8px 0;
+  margin: 0;
+  border: 0;
+  line-height: 1.3;
+  z-index: 100;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.15);
+}
+
+/* -------------- Place Listing (clean) -------------- */
+.page-title { text-align: center; font-weight: 700; margin: 20px 0 10px; }
+.places-list { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; padding: 10px 0 30px; }
+#price-filter { display: block; margin: 20px auto; background: #fff8e1; border:1px solid #ffd166; padding:5px; border-radius:5px; }
+/* Pop-out place cards */
+.place-card {
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:14px;
+  padding:24px 28px 28px;
+  width:300px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);
+  transition:transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.place-card:hover {
+  transform:translateY(-10px) scale(1.02);
+  box-shadow:0 14px 28px rgba(0,0,0,0.18);
+}
+.place-card h3 { font-size:1.2rem; margin:0 0 4px; }
+.place-card p { margin:0 0 6px; }
+/* amenities removed from index cards */
+/* Images removed from index cards */
+.place-card img.place-img { display:none; }
+
+/* -------------- Place Details Page -------------- */
+.place-details {
+  max-width: 860px;
+  margin: 20px auto 32px;
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:16px;
+  padding:36px 50px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.12);
+  text-align:center;
+}
+.place-details h2.place-title { font-size:2rem; margin:0 0 18px; }
+.place-details p { margin:8px 0; }
+.place-details .amenities { margin-top:20px; }
+.place-details .amenities-row { display:flex; justify-content:center; gap:14px; margin-top:10px; }
+.place-details .amenity-icon { width:34px; height:34px; opacity:.9; transition:transform .18s, opacity .18s; }
+.place-details .amenity-icon:hover { transform:translateY(-4px) scale(1.06); opacity:1; }
+
+#reviews { max-width: 860px; margin: 10px auto 24px; }
+#reviews .section-divider { position:relative; text-align:center; margin:0 0 26px; }
+#reviews .section-divider span { background:#F5F5F5; padding:0 14px; font-size:1.4rem; font-weight:700; }
+#reviews .section-divider:before { content:''; position:absolute; left:0; top:50%; width:100%; height:2px; background:#e0e0e0; z-index:-1; }
+.review-card {
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:14px;
+  padding:22px 26px 24px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.10);
+  margin-bottom:20px;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s;
+}
+.review-card:hover { transform:translateY(-6px); box-shadow:0 10px 26px rgba(0,0,0,0.18); }
+.review-card p { margin:6px 0; line-height:1.4; }
+
+/* Add Review button bottom spacing */
+.add-review-bottom { max-width:860px; margin: 0 auto 120px; text-align:center; }
+.add-review-bottom .details-button { margin-top:4px; }
+
+/* -------------- Review Form Page -------------- */
+body.review-page main { flex:1 0 auto; display:flex; align-items:center; justify-content:center; padding:40px 20px 140px; }
+#review-form.review-card {
+  width:100%;
+  max-width:520px;
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:18px;
+  padding:40px 46px 46px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s;
+}
+#review-form.review-card:hover { transform:translateY(-8px); box-shadow:0 16px 34px rgba(0,0,0,0.18); }
+#review-form.review-card h2 { font-size:1.9rem; margin:0 0 4px; text-align:center; }
+#review-form.review-card label { font-size:.85rem; font-weight:600; text-align:left; margin:4px 0 4px; }
+#review-form.review-card textarea {
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #ccc;
+  border-radius:12px;
+  font-size:.9rem;
+  resize:vertical;
+  min-height:140px;
+  background:#fdfdfd;
+  transition:border-color .18s, box-shadow .18s;
+}
+#review-form.review-card input[type=number] {
+  width:110px;
+  padding:10px 12px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  font-size:.9rem;
+  background:#fdfdfd;
+  transition:border-color .18s, box-shadow .18s;
+}
+#review-form.review-card textarea:focus,
+#review-form.review-card input[type=number]:focus { outline:none; border-color:#ff9500; box-shadow:0 0 0 3px rgba(255,149,0,0.25); }
+#review-form.review-card button[type=submit] {
+  background:#ff9500;
+  color:#333;
+  border:1px solid #e68400;
+  font-weight:600;
+  padding:12px 20px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:.95rem;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, background .18s;
+}
+#review-form.review-card button[type=submit]:hover { background:#ffa733; transform:translateY(-4px); box-shadow:0 10px 20px rgba(0,0,0,0.20); }
+#review-form.review-card button[type=submit]:active { background:#ff9500; transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,0.18); }
+#review-form .rating-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#review-form .rating-row small { font-size:.7rem; color:#555; font-weight:600; }
+
+/* -------------- Auth Pages -------------- */
+body.login-page main { flex:1 0 auto; display:flex; align-items:center; justify-content:center; padding:40px 20px 120px; }
+#login-form.auth-card {
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:18px;
+  padding:38px 44px 42px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s;
+}
+#login-form.auth-card:hover { transform:translateY(-8px); box-shadow:0 16px 34px rgba(0,0,0,0.18); }
+#login-form h2 { font-size:1.9rem; margin:0 0 4px; }
+#login-form label { font-size:.85rem; font-weight:600; text-align:left; margin:4px 0 4px; }
+#login-form input[type=email],
+#login-form input[type=password] {
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  font-size:.9rem;
+  background:#fdfdfd;
+  transition:border-color .18s, box-shadow .18s;
+}
+#login-form input:focus { outline:none; border-color:#ff9500; box-shadow:0 0 0 3px rgba(255,149,0,0.25); }
+#login-form button[type=submit] {
+  background:#ff9500;
+  color:#333;
+  border:1px solid #e68400;
+  font-weight:600;
+  padding:10px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:.95rem;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, background .18s;
+}
+#login-form button[type=submit]:hover { background:#ffa733; transform:translateY(-4px); box-shadow:0 10px 20px rgba(0,0,0,0.20); }
+#login-form button[type=submit]:active { background:#ff9500; transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,0.18); }
+#login-form .hint { font-size:.75rem; margin-top:4px; color:#555; }
+#login-form .linklike { font-weight:600; }
+#login-form .error { margin-top:4px; }

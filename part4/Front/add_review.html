@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB – Add Review</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="icon" href="images/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="review-page">
+  <header>
+    <nav>
+      <div class="logo-stack">
+        <a href="index.html">
+          <img src="images/logo.png" alt="HBnB Logo" class="logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <a href="login.html" class="login-button pop-btn" id="login-link">Login</a>
+        <a href="#" id="logout-button" class="login-button pop-btn" style="display:none;">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <form id="review-form" class="review-card">
+      <h2>Add a Review</h2>
+
+      <label for="review">Your Review:</label>
+      <textarea id="review" name="review" required placeholder="Share your experience..."></textarea>
+
+      <div class="rating-row">
+        <label for="rating">Rating (1–5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required>
+        <small>5 = Excellent stay</small>
+      </div>
+
+      <button type="submit">Submit Review</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js?v=3"></script>
+</body>
+</html>
